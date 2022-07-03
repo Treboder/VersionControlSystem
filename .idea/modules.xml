@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VersionControlSystem.iml" filepath="$PROJECT_DIR$/.idea/modules/VersionControlSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Version Control System/task/VersionControlSystem.Version_Control_System-task.iml" filepath="$PROJECT_DIR$/.idea/modules/Version Control System/task/VersionControlSystem.Version_Control_System-task.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Version Control System/task/VersionControlSystem.Version_Control_System-task.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Version Control System/task/VersionControlSystem.Version_Control_System-task.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Version Control System/task/VersionControlSystem.Version_Control_System-task.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Version Control System/task/VersionControlSystem.Version_Control_System-task.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/VersionControlSystem.util.iml" filepath="$PROJECT_DIR$/.idea/modules/util/VersionControlSystem.util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/VersionControlSystem.util.main.iml" filepath="$PROJECT_DIR$/.idea/modules/util/VersionControlSystem.util.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/VersionControlSystem.util.test.iml" filepath="$PROJECT_DIR$/.idea/modules/util/VersionControlSystem.util.test.iml" />
+    </modules>
+  </component>
+</project>

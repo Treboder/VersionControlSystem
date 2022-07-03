@@ -1,0 +1,61 @@
+<h5 id="description">Description</h5>
+
+<p>A <strong>version control system </strong>is software that can keep track of the changes that were implemented to a program. There are several popular version control systems (like Git, SVN, or Mercurial). Each of them has its pros and cons. They share one common idea. A version control system remembers <strong>who</strong> changed the file, when it was done, and <strong>why</strong>.<strong> </strong>It allows you to roll back to the previous versions as well.</p>
+
+<p>In this project, you need to implement a simple version control system. It will be your own Git. By the way, if you want to learn how to work with Git, take a look at the <a target="_blank" target="_blank" target="_blank" target="_blank" target="_blank" href="https://githowto.com/" rel="noopener noreferrer nofollow">GIt How To</a>.</p>
+
+<p>Take a look at the commands you will need to implement during this project:</p>
+
+<ul>
+	<li><code class="java">config</code> sets or outputs the name of a commit author;</li>
+	<li><code class="java">--help</code> prints the help page;</li>
+	<li><code class="java">add</code> adds a file to the list of tracked files or outputs this list;</li>
+	<li><code class="java">log</code> shows all commits;</li>
+	<li><code class="java">commit</code> saves file changes and the author name;</li>
+	<li><code class="java">checkout</code> allows you to switch between commits and restore a previous file state.</li>
+</ul>
+
+<p>In this stage, your program should be able to accept a single argument and, depending on the argument, print help information.</p>
+
+<h5 id="objectives">Objectives</h5>
+
+<p>In this stage, your program should:</p>
+
+<ul>
+	<li>Take one argument as a command.</li>
+	<li>If an argument is missing or it is <code class="java">--help</code>, print the entire help page.</li>
+	<li>If a command exists, the program should output a description of the command.</li>
+	<li>If the command is wrong, print <code class="java">'[passed argument]' is not a SVCS command.</code></li>
+</ul>
+
+<p><div class="alert alert-primary">Unlike many other projects, the program does not run in an infinite loop. The program starts with arguments that are passed to the main function and should do something, then starts from scratch again with other arguments and should do something else.</div></p>
+
+<h5 id="examples">Examples</h5>
+
+<p>The greater-than symbol followed by a space (<code class="java">&gt; </code>) represents the user input. Note that it's not part of the input. The verification system ignores all spaces, but we suggest trying to create a nice output.</p>
+
+<p><strong>Example 1</strong>: <em>the <code class="java">--help</code> argument</em></p>
+
+<pre><code class="language-no-highlight">These are SVCS commands:
+config     Get and set a username.
+add        Add a file to the index.
+log        Show commit logs.
+commit     Save changes.
+checkout   Restore a file.</code></pre>
+
+<p><strong>Example 2</strong>: <em>no arguments</em></p>
+
+<pre><code class="language-no-highlight">These are SVCS commands:
+config     Get and set a username.
+add        Add a file to the index.
+log        Show commit logs.
+commit     Save changes.
+checkout   Restore a file.</code></pre>
+
+<p><strong>Example 3</strong>: <em>the <code class="java"><span style="color: #000000;">config</span></code> argument</em></p>
+
+<pre><code class="language-no-highlight">Get and set a username.</code></pre>
+
+<p><strong>Example 4</strong>: <em>the <code class="java"><span style="color: #000000;">wrong</span></code> argument</em></p>
+
+<pre><code class="language-no-highlight">'wrong' is not a SVCS command.</code></pre>

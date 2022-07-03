@@ -1,0 +1,53 @@
+<h5 id="description">Description</h5>
+
+<p>In the last stage, implement the <code class="java">checkout</code> command. It allows a user to switch between commits and restore the contents of the files according to the current commit.</p>
+
+<p>Get the files you need from the commit directory by the commit id and rewrite the current files.</p>
+
+<pre><code class="java">.
+├── vcs
+│   ├── commits
+│   │   ├── 2853da19f31cfc086cd5c40915253cb28d5eb01c
+│   │   │   ├── file1.txt
+│   │   │   └── file2.txt
+│   │   └── 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+│   │       ├── file1.txt
+│   │       └── file2.txt
+│   ├── config.txt
+│   ├── index.txt
+│   └── log.txt
+├── file1.txt
+├── file2.txt
+└── untracked_file.txt</code></pre>
+
+<h5 id="objectives">Objectives</h5>
+
+<p>The <code class="java">checkout</code> command must be passed to the program together with the commit ID to indicate which commit should be used. If a commit with the given ID exists, the contents of the tracked file should be restored in accordance with this commit.</p>
+
+<p><div class="alert alert-primary">Do not create file1.txt, file2.txt and untracked_file.txt. This is an example of the files that a user of your version control system will work with.</div></p>
+
+<h5 id="examples">Examples</h5>
+
+<p>The greater-than symbol followed by a space (<code class="java">&gt; </code>) represents the user input. Note that it's not part of the input.</p>
+
+<p><strong>Example 1</strong>: <em>the <code class="java">log</code> argument</em></p>
+
+<pre><code class="language-no-highlight">commit 2853da19f31cfc086cd5c40915253cb28d5eb01c
+Author: John
+Changed several lines of code
+
+commit 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+Author: John
+Added several lines of code</code></pre>
+
+<p><strong>Example 2:</strong> <em>the <code class="java">checkout 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Switched to commit 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a.</code></pre>
+
+<p><strong>Example 3:</strong> <em>the <code class="java">checkout fb92cc1be7f60c8d9acf74cbd4a67841d8d2e844</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Commit does not exist.</code></pre>
+
+<p><strong>Example 4</strong>: <em>the <code class="java">checkout</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Commit id was not passed.</code></pre>

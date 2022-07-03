@@ -1,0 +1,108 @@
+<h5 id="description">Description</h5>
+
+<p>In this stage, you should implement two commands. <code class="java">Commit</code> will allow a user to save file changes; <code class="java">log</code> will allow viewing the commit history.</p>
+
+<p>Git may seem quite complicated. If you want to learn more, watch the <a target="_blank" target="_blank" target="_blank" target="_blank" target="_blank" href="https://youtu.be/P6jD966jzlk" rel="noopener noreferrer nofollow">video explanation</a> by GitLab.</p>
+
+<p>The purpose of this project is to work with files. Store different file versions in the index according to the commits and make sure that each commit has a unique ID. ID should allow you to find a specific file version that matches this commit. You need to think about the concept of a commit ID.</p>
+
+<p>You can store commits inside <em>vsc/commits</em>. Each commit will be saved to a separate directory. These directories will include a commit's ID and additional information that you can store in <em>vsc/log.txt</em>.</p>
+
+<p>You will also need to find out whether a file has been changed since the last commit. For that, you need to calculate the hash of the current file and the hash of the last commit. If these values are different, then the file has been changed. Use <strong>Java Cryptography Architecture </strong>(JCA). JCA includes solutions that are based on various cryptographic algorithms such as <strong>SHA1</strong>, <strong>SHA256</strong>,<strong> </strong>and others. Hash functions are optional, you can use a different solution.</p>
+
+<h5 id="objectives">Objectives</h5>
+
+<p>Implement the following commands:</p>
+
+<ul>
+	<li><code class="java">commit</code> must be passed to the program along with a message (see examples). Save all changes. Each commit must be assigned a unique id. if there were no changes since the last commit, do not create a new commit. You don't need to optimize the storage of changes, just copy all the staged files to the commit folder every time.</li>
+	<li><code class="java">log</code> should show all the commits in reverse order.</li>
+</ul>
+
+<p><div class="alert alert-primary">Do not create file1.txt, file2.txt and untracked_file.txt. This is an example of the files that a user of your version control system will work with.</div></p>
+
+<h5 id="examples">Examples</h5>
+
+<p>The greater-than symbol followed by a space (<code class="java">&gt; </code>) represents the user input. Note that it's not part of the input.</p>
+
+<p><strong>Example 1</strong>: <em>the <code class="java">log</code> argument</em></p>
+
+<pre><code class="language-no-highlight">No commits yet.</code></pre>
+
+<p><em>This is the directory tree. Don't output it.</em></p>
+
+<pre><code class="java">.
+├── vcs
+│   ├── commits
+│   ├── config.txt
+│   ├── index.txt
+│   └── log.txt
+├── file1.txt
+├── file2.txt
+└── untracked_file.txt</code></pre>
+
+<p><strong>Example 2</strong>: <em>the <code class="java">commit "Added several lines of code to the file1.txt"</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Changes are committed.</code></pre>
+
+<p><em>This is the directory tree. Don't output it.</em></p>
+
+<pre><code class="java">.
+├── vcs
+│   ├── commits
+│   │   └── 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+│   │       ├── file1.txt
+│   │       └── file2.txt
+│   ├── config.txt
+│   ├── index.txt
+│   └── log.txt
+├── file1.txt
+├── file2.txt
+└── untracked_file.txt</code></pre>
+
+<p><strong>Example 3</strong>: <em>the <code class="java">log</code> argument</em></p>
+
+<pre><code class="language-no-highlight">commit 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+Author: John
+Added several lines of code to the file1.txt
+</code></pre>
+
+<p><strong>Example 4</strong>: <em>the <code class="java">commit "Changed several lines of code in the file2.txt"</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Changes are committed.</code></pre>
+
+<p><strong>Example 5</strong>: <em>the <code class="java">log</code> argument</em></p>
+
+<pre><code class="language-no-highlight">commit 2853da19f31cfc086cd5c40915253cb28d5eb01c
+Author: John
+Changed several lines of code in the file2.txt
+
+commit 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+Author: John
+Added several lines of code to the file1.txt</code></pre>
+
+<p><em>This is the directory tree. Don't output it.</em></p>
+
+<pre><code class="java">.
+├── vcs
+│   ├── commits
+│   │   ├── 2853da19f31cfc086cd5c40915253cb28d5eb01c
+│   │   │   ├── file1.txt
+│   │   │   └── file2.txt
+│   │   └── 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+│   │       ├── file1.txt
+│   │       └── file2.txt
+│   ├── config.txt
+│   ├── index.txt
+│   └── log.txt
+├── file1.txt
+├── file2.txt
+└── untracked_file.txt</code></pre>
+
+<p><strong>Example 6</strong>: <em>the <code class="java">commit "Files were not changed"</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Nothing to commit.</code></pre>
+
+<p><strong>Example 7</strong>: <em>the <code class="java">commit</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Message was not passed.</code></pre>

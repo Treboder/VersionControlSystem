@@ -1,0 +1,70 @@
+<h5 id="description">Description</h5>
+
+<p>In this stage, your program should allow a user to set their name and add the files they want to track. Store a username in <em>config.txt</em>.</p>
+
+<p><em>Index.txt</em> stores the files that were added to the index. Don't forget to store all the files of the version control system in the <em>vcs</em> directory. You should create this directory programmatically. It may look something like this:</p>
+
+<pre><code class="java">.
+├── vcs
+│   ├── config.txt
+│   └── index.txt
+├── tracked_file.txt
+└── untracked_file.txt</code></pre>
+
+<h5 id="objectives">Objectives</h5>
+
+<p>You need to work on the following commands:</p>
+
+<ul>
+	<li><code class="java">config</code> should allow the user to set their own name or output an already existing name. If a user wants to set a new name, the program must overwrite the old one.</li>
+	<li><code class="java">add</code> should allow the user to set the name of a file that they want to track or output the names of tracked files. If the file does not exist, the program should inform a user that the file does not exist.</li>
+</ul>
+
+<p><div class="alert alert-primary">Do not create tracked_file.txt and untracked_file.txt. This is an example of the files that a user of your version control system will work with.</div></p>
+
+<h5 id="examples">Examples</h5>
+
+<p>The greater-than symbol followed by a space (<code class="java">&gt; </code>) represents the user input. Note that it's not part of the input.</p>
+
+<p><strong>Example 1</strong>: <em>the <code class="java">config</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Please, tell me who you are.</code></pre>
+
+<p><strong>Example 2</strong>: <em>the <code class="java">config John</code> argument</em></p>
+
+<pre><code class="language-no-highlight">The username is John.</code></pre>
+
+<p><strong>Example 3</strong>: <em>the <code class="java">config</code> argument</em></p>
+
+<pre><code class="language-no-highlight">The username is John.</code></pre>
+
+<p><strong>Example 4</strong>: <em>the <code class="java">config Max</code> argument</em></p>
+
+<pre><code class="language-no-highlight">The username is Max.</code></pre>
+
+<p><strong>Example 5</strong>: <em>the <code class="java">add</code> argument</em>.</p>
+
+<pre><code class="language-no-highlight">Add a file to the index.</code></pre>
+
+<p><strong>Example 6</strong>: <em>the <code class="java">add file.txt</code> argument</em>s</p>
+
+<pre><code class="language-no-highlight">The file 'file.txt' is tracked.</code></pre>
+
+<p><strong>Example 7</strong>: <em>the <code class="java">add</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Tracked files:
+file.txt</code></pre>
+
+<p><strong>Example 8</strong>: <em>the <code class="java">add new_file.txt</code> argument</em></p>
+
+<pre><code class="language-no-highlight">The file 'new_file.txt' is tracked.</code></pre>
+
+<p><strong>Example 9</strong>: <em>the <code class="java">add</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Tracked files:
+file.txt
+new_file.txt</code></pre>
+
+<p><strong>Example 10</strong>: <em>the <code class="java">add not_exists_file.txt</code> argument</em></p>
+
+<pre><code class="language-no-highlight">Can't find 'not_exists_file.txt'.</code></pre>
