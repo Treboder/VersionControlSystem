@@ -22,4 +22,29 @@
 Start test 4[0m
 Please, tell me who you are.
 The username is Max.
-Please, tell me who you are.
+The username is Max.
+The username is John.
+The username is John.
+[1;31m
+Start test 5[0m
+Add a file to the index.
+$The file 'file558.txt' is tracked.
+Tracked files:
+file558.txt
+$The file 'file464.txt' is tracked.
+Tracked files:
+file558.txt
+file464.txt
+Can't find 'file320.txt'.
+[1;31m
+Start test 6[0m
+Show commit logs.
+[1;31m
+Start test 7[0m
+Save changes.
+[1;31m
+Start test 8[0m
+Restore a file.
+[1;31m
+Start test 9[0m
+&'wrongArg713' is not a SVCS command.

@@ -236,25 +236,8 @@ files:
 
   learner_created: false
 feedback_link: https://hyperskill.org/learn/step/13043#comment
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Wrong answer in test #4
-
-    Your program should output &quot;The username is Max.&quot;,
-    but printed: &quot;Please, tell me who you are.
-    &quot;
-
-    Please find below the output of your program during this failed test.
-
-    ---
-
-    Arguments for MainKt: config
-    Arguments for MainKt: config Max
-    Arguments for MainKt: config
-
-    Please, tell me who you are.
-    The username is Max.
-    Please, tell me who you are.
-  time: Mon, 04 Jul 2022 17:04:19 UTC
+  message: Congratulations!
+  time: Mon, 04 Jul 2022 21:26:06 UTC
 record: -1

@@ -73,6 +73,7 @@ class Interpreter(_settings:Settings, _repository:Repository) {
     }
 
     fun config() {
+        settings.loadSettings()
         if(settings.username == "")
             println("Please, tell me who you are.")
         else
@@ -81,22 +82,31 @@ class Interpreter(_settings:Settings, _repository:Repository) {
 
     fun config(name: String) {
         settings.username = name
+        settings.saveSettings()
         println("The username is ${settings.username}.")
     }
 
     fun add() {
+        repository.loadSettings()
         if(repository.trackedFiles.size == 0)
             println("Add a file to the index.")
-        else
+        else {
+            println("Tracked files:")
             for (file in repository.trackedFiles)
                 println(file)
+        }
     }
 
     fun add(newFile:String) {
-        if(newFile == "not_exists_file.txt")
+        val dir = System.getProperty("user.dir")
+        val file = File(dir+"\\$newFile")
+        //if(false) {
+        if(!file.exists()) {
             println("Can't find '$newFile'.")
-        else{
+        }
+        else {
             repository.trackedFiles.add(newFile)
+            repository.saveSettings()
             println("The file '$newFile' is tracked.")
         }
     }
@@ -117,46 +127,62 @@ class Interpreter(_settings:Settings, _repository:Repository) {
 
 class Settings() {
 
+    val dir = System.getProperty("user.dir") + "\\vcs"
+    val file = File(dir+"\\config.txt")
     var username = ""
 
     init {
-        saveSettings()
+        initFileSystem()
+        loadSettings()
+    }
+
+    fun initFileSystem() {
+        // create directory
+        if(!Files.exists(Paths.get(dir)))
+            Files.createDirectory(Paths.get(dir))
+        // create file
+        if(!file.exists())
+            file.createNewFile()
+    }
+
+    fun loadSettings() {
+        username = file.readText()
     }
 
     fun saveSettings() {
-
-        // create directory
-        val dir = System.getProperty("user.dir") + "\\vcs"
-        if(!Files.exists(Paths.get(dir)))
-            Files.createDirectory(Paths.get(dir))
-
-        // create file
-        var file = File(dir+"\\config.txt")
-        if(!file.exists())
-            file.createNewFile()
-
+        file.writeText(username)
     }
 }
 
 class Repository() {
-    val trackedFiles = mutableListOf<String>()
+
+    val dir = System.getProperty("user.dir") + "\\vcs"
+    var file = File(dir+"\\index.txt")
+    var trackedFiles = mutableListOf<String>()
 
     init {
-        saveSettings()
+        initFileSystem()
+        loadSettings()
+    }
+
+    fun initFileSystem() {
+        // create directory
+        if(!Files.exists(Paths.get(dir)))
+            Files.createDirectory(Paths.get(dir))
+        // create file
+        if(!file.exists())
+            file.createNewFile()
+    }
+
+    fun loadSettings() {
+        trackedFiles.clear()
+        for(fileName in file.readText().split(" "))
+            if(fileName != "")
+                trackedFiles.add(fileName)
     }
 
     fun saveSettings() {
-
-        // create directory
-        val dir = System.getProperty("user.dir") + "\\vcs"
-        if(!Files.exists(Paths.get(dir)))
-            Files.createDirectory(Paths.get(dir))
-
-        // create file
-        var file = File(dir+"\\index.txt")
-        if(!file.exists())
-            file.createNewFile()
-
+        file.writeText(trackedFiles.joinToString(separator = " ") {it})
     }
 
 }
