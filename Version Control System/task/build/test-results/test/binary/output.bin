@@ -1,32 +1,25 @@
 [1;31m
 Start test 1[0m
-Add a file to the index.
+The username is Max.
 [1;31m
 Start test 2[0m
-Restore a file.
+ The file 'abc.txt' is tracked.
 [1;31m
 Start test 3[0m
-Save changes.
+These are SVCS commands:
+#config     Get and set a username.
+$add        Add a file to the index.
+log        Show commit logs.
+commit     Save changes.
+checkout   Restore a file.
+These are SVCS commands:
+#config     Get and set a username.
+$add        Add a file to the index.
+log        Show commit logs.
+commit     Save changes.
+checkout   Restore a file.
 [1;31m
 Start test 4[0m
-Get and set a username.
-[1;31m
-Start test 5[0m
-These are SVCS commands:
-#config     Get and set a username.
-$add        Add a file to the index.
-log        Show commit logs.
-commit     Save changes.
-checkout   Restore a file.
-These are SVCS commands:
-#config     Get and set a username.
-$add        Add a file to the index.
-log        Show commit logs.
-commit     Save changes.
-checkout   Restore a file.
-[1;31m
-Start test 6[0m
-Show commit logs.
-[1;31m
-Start test 7[0m
-&'wrongArg118' is not a SVCS command.
+Please, tell me who you are.
+The username is Max.
+Please, tell me who you are.
