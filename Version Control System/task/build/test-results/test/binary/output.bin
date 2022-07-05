@@ -28,14 +28,14 @@
 [1;31m
 Start test 5[0m
 Add a file to the index.
-$The file 'file558.txt' is tracked.
+#The file 'file40.txt' is tracked.
 Tracked files:
-file558.txt
-$The file 'file464.txt' is tracked.
+file40.txt
+#The file 'file40.txt' is tracked.
 Tracked files:
-file558.txt
-file464.txt
-Can't find 'file320.txt'.
+file40.txt
+file40.txt
+Can't find 'file494.txt'.
 [1;31m
 Start test 6[0m
 Show commit logs.
@@ -47,4 +47,4 @@
 Restore a file.
 [1;31m
 Start test 9[0m
-&'wrongArg713' is not a SVCS command.
+&'wrongArg850' is not a SVCS command.

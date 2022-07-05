@@ -6,31 +6,34 @@ import java.nio.file.Paths
 
 fun main(args: Array<String>) {
 
-    val debugging = false
-    val settings = Settings()
-    val repository = Repository()
-    val interpreter = Interpreter(settings, repository)
+    // prepare directory/file structure
+    StaticAppConfig.initFileSystem()
 
-    // run interpreter in a loop for easy debugging
-    while(debugging) {
-        print("> ")
-        val arguments = mutableListOf<String>()
-        arguments.addAll(readLine()!!.split(" "))
-        interpreter.processArguments(arguments)
-        if(arguments.first() == "exit")
-            return
-    }
+    // init global variables
+    val config = Config()
+    val index = Index()
+    val interpreter = Interpreter(config, index)
+
+    // specify run mode, either in debugging mode or as desired with main args
+    val debugging = false
 
     // desired usage with main args from command prompt
     if(!debugging)
         interpreter.processArguments(args.toMutableList())
 
+    // run interpreter in endless loop for easy debugging
+    while(debugging) {
+        print("> ")
+        val arguments = mutableListOf<String>()
+        arguments.addAll(readLine()!!.split(" "))
+        interpreter.processArguments(arguments)
+    }
 }
 
-class Interpreter(_settings:Settings, _repository:Repository) {
+class Interpreter(_config:Config, _index:Index) {
 
-    val settings = _settings
-    val repository = _repository
+    val config = _config
+    val index = _index
 
     fun processArguments(args: MutableList<String>) {
         if (args.size == 0) {
@@ -73,27 +76,29 @@ class Interpreter(_settings:Settings, _repository:Repository) {
     }
 
     fun config() {
-        settings.loadSettings()
-        if(settings.username == "")
+        config.loadConfig()
+        if(config.username == "")
             println("Please, tell me who you are.")
         else
-            println("The username is ${settings.username}.")
+            println("The username is ${config.username}.")
     }
 
     fun config(name: String) {
-        settings.username = name
-        settings.saveSettings()
-        println("The username is ${settings.username}.")
+        config.username = name
+        config.saveConfig()
+        println("The username is ${config.username}.")
     }
 
     fun add() {
-        repository.loadSettings()
-        if(repository.trackedFiles.size == 0)
+        index.loadIndex()
+        if(index.trackedFiles.size == 0)
             println("Add a file to the index.")
         else {
             println("Tracked files:")
-            for (file in repository.trackedFiles)
+            for (file in index.trackedFiles)
                 println(file)
+            // alternatively without loop in one line
+            // println(repository.trackedFiles.joinToString(separator = CommonDefinitions.separator) {it})
         }
     }
 
@@ -105,8 +110,8 @@ class Interpreter(_settings:Settings, _repository:Repository) {
             println("Can't find '$newFile'.")
         }
         else {
-            repository.trackedFiles.add(newFile)
-            repository.saveSettings()
+            index.trackedFiles.add(newFile)
+            index.saveIndex()
             println("The file '$newFile' is tracked.")
         }
     }
@@ -125,64 +130,62 @@ class Interpreter(_settings:Settings, _repository:Repository) {
 
 }
 
-class Settings() {
+class Config() {
 
-    val dir = System.getProperty("user.dir") + "\\vcs"
-    val file = File(dir+"\\config.txt")
     var username = ""
 
     init {
-        initFileSystem()
-        loadSettings()
+        loadConfig()
     }
 
-    fun initFileSystem() {
-        // create directory
-        if(!Files.exists(Paths.get(dir)))
-            Files.createDirectory(Paths.get(dir))
-        // create file
-        if(!file.exists())
-            file.createNewFile()
+    fun loadConfig() {
+        username = StaticAppConfig.configFile.readText()
     }
 
-    fun loadSettings() {
-        username = file.readText()
-    }
-
-    fun saveSettings() {
-        file.writeText(username)
+    fun saveConfig() {
+        StaticAppConfig.configFile.writeText(username)
     }
 }
 
-class Repository() {
+class Index() {
 
-    val dir = System.getProperty("user.dir") + "\\vcs"
-    var file = File(dir+"\\index.txt")
     var trackedFiles = mutableListOf<String>()
 
     init {
-        initFileSystem()
-        loadSettings()
+        loadIndex()
     }
 
-    fun initFileSystem() {
-        // create directory
-        if(!Files.exists(Paths.get(dir)))
-            Files.createDirectory(Paths.get(dir))
-        // create file
-        if(!file.exists())
-            file.createNewFile()
-    }
-
-    fun loadSettings() {
+    fun loadIndex() {
         trackedFiles.clear()
-        for(fileName in file.readText().split(" "))
+        for(fileName in StaticAppConfig.indexFile.readText().split(StaticAppConfig.indexItemSeparator))
             if(fileName != "")
                 trackedFiles.add(fileName)
     }
 
-    fun saveSettings() {
-        file.writeText(trackedFiles.joinToString(separator = " ") {it})
+    fun saveIndex() {
+        StaticAppConfig.indexFile.writeText(trackedFiles.joinToString(separator = StaticAppConfig.indexItemSeparator) {it})
     }
+}
 
+object StaticAppConfig {
+
+    val vcsDirectory = System.getProperty("user.dir") + "\\vcs"
+    val configFile = File(vcsDirectory + "\\config.txt")
+    var indexFile = File(vcsDirectory + "\\index.txt")
+    val indexItemSeparator = "\n"
+
+    fun initFileSystem() {
+
+        // create directory
+        if(!Files.exists(Paths.get(vcsDirectory)))
+            Files.createDirectory(Paths.get(vcsDirectory))
+
+        // create config file
+        if(!configFile.exists())
+            configFile.createNewFile()
+
+        // create index file
+        if(!indexFile.exists())
+            indexFile.createNewFile()
+    }
 }
