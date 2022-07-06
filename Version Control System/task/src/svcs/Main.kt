@@ -1,8 +1,6 @@
 package svcs
 
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 
 fun main(args: Array<String>) {
 
@@ -15,7 +13,7 @@ fun main(args: Array<String>) {
     val interpreter = Interpreter(config, index)
 
     // specify run mode, either in debugging mode or as desired with main args
-    val debugging = false
+    val debugging = true
 
     // desired usage with main args from command prompt
     if(!debugging)
@@ -169,16 +167,16 @@ class Index() {
 
 object StaticAppConfig {
 
-    val vcsDirectory = System.getProperty("user.dir") + "\\vcs"
-    val configFile = File(vcsDirectory + "\\config.txt")
-    var indexFile = File(vcsDirectory + "\\index.txt")
+    val vcsDirectory = File(System.getProperty("user.dir") + "\\vcs")
+    val configFile = File(vcsDirectory.absolutePath + "\\config.txt")
+    var indexFile = File(vcsDirectory.absolutePath + "\\index.txt")
     val indexItemSeparator = "\n"
 
     fun initFileSystem() {
 
         // create directory
-        if(!Files.exists(Paths.get(vcsDirectory)))
-            Files.createDirectory(Paths.get(vcsDirectory))
+        if(!vcsDirectory.exists())
+            vcsDirectory.mkdir()
 
         // create config file
         if(!configFile.exists())
