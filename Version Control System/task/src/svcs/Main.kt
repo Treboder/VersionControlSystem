@@ -1,37 +1,31 @@
 package svcs
 
 import java.io.File
+import java.security.MessageDigest
+import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
 
     // prepare directory/file structure
     StaticAppConfig.initFileSystem()
 
-    // init global variables
-    val config = Config()
-    val index = Index()
-    val interpreter = Interpreter(config, index)
-
     // specify run mode, either in debugging mode or as desired with main args
-    val debugging = true
+    val debugging = false
 
     // desired usage with main args from command prompt
     if(!debugging)
-        interpreter.processArguments(args.toMutableList())
+        Interpreter.processArguments(args.toMutableList())
 
     // run interpreter in endless loop for easy debugging
     while(debugging) {
         print("> ")
         val arguments = mutableListOf<String>()
         arguments.addAll(readLine()!!.split(" "))
-        interpreter.processArguments(arguments)
+        Interpreter.processArguments(arguments)
     }
 }
 
-class Interpreter(_config:Config, _index:Index) {
-
-    val config = _config
-    val index = _index
+object Interpreter {
 
     fun processArguments(args: MutableList<String>) {
         if (args.size == 0) {
@@ -56,7 +50,7 @@ class Interpreter(_config:Config, _index:Index) {
                 "config" -> config(args[1])
                 "add" -> add(args[1])
                 "log" -> log()
-                "commit" -> commit()
+                "commit" -> commit(args[1])
                 "checkout" -> checkout()
                 else -> println("'${args[1]}' is not a SVCS command.")
             }
@@ -74,26 +68,26 @@ class Interpreter(_config:Config, _index:Index) {
     }
 
     fun config() {
-        config.loadConfig()
-        if(config.username == "")
+        Config.loadConfig()
+        if(Config.username == "")
             println("Please, tell me who you are.")
         else
-            println("The username is ${config.username}.")
+            println("The username is ${Config.username}.")
     }
 
     fun config(name: String) {
-        config.username = name
-        config.saveConfig()
-        println("The username is ${config.username}.")
+        Config.username = name
+        Config.saveConfig()
+        println("The username is ${Config.username}.")
     }
 
     fun add() {
-        index.loadIndex()
-        if(index.trackedFiles.size == 0)
+        Index.loadIndex()
+        if(Index.trackedFiles.size == 0)
             println("Add a file to the index.")
         else {
             println("Tracked files:")
-            for (file in index.trackedFiles)
+            for (file in Index.trackedFiles)
                 println(file)
             // alternatively without loop in one line
             // println(repository.trackedFiles.joinToString(separator = CommonDefinitions.separator) {it})
@@ -108,18 +102,21 @@ class Interpreter(_config:Config, _index:Index) {
             println("Can't find '$newFile'.")
         }
         else {
-            index.trackedFiles.add(newFile)
-            index.saveIndex()
+            Index.addFileToIndexAndSaveIndex(newFile)
             println("The file '$newFile' is tracked.")
         }
     }
 
     fun log() {
-        println("Show commit logs.")
+        Log.showLog()
     }
 
     fun commit() {
-        println("Save changes.")
+        println("Message was not passed.")
+    }
+
+    fun commit(message:String) {
+        val newCommit = Commit(message)
     }
 
     fun checkout() {
@@ -128,16 +125,12 @@ class Interpreter(_config:Config, _index:Index) {
 
 }
 
-class Config() {
+object Config {
 
-    var username = ""
+    var username = loadConfig()
 
-    init {
-        loadConfig()
-    }
-
-    fun loadConfig() {
-        username = StaticAppConfig.configFile.readText()
+    fun loadConfig():String {
+        return StaticAppConfig.configFile.readText()
     }
 
     fun saveConfig() {
@@ -145,9 +138,10 @@ class Config() {
     }
 }
 
-class Index() {
+object Index {
 
     var trackedFiles = mutableListOf<String>()
+    val indexItemSeparator = "\n"
 
     init {
         loadIndex()
@@ -155,28 +149,119 @@ class Index() {
 
     fun loadIndex() {
         trackedFiles.clear()
-        for(fileName in StaticAppConfig.indexFile.readText().split(StaticAppConfig.indexItemSeparator))
+        for(fileName in StaticAppConfig.indexFile.readText().split(indexItemSeparator))
             if(fileName != "")
                 trackedFiles.add(fileName)
     }
 
-    fun saveIndex() {
-        StaticAppConfig.indexFile.writeText(trackedFiles.joinToString(separator = StaticAppConfig.indexItemSeparator) {it})
+    fun addFileToIndexAndSaveIndex(fileName:String) {
+        if(!trackedFiles.contains(fileName)) {
+            Index.trackedFiles.add(fileName)
+            StaticAppConfig.indexFile.writeText(trackedFiles.joinToString(separator = indexItemSeparator) { it })
+        }
     }
+}
+
+object Log {
+
+    var log = loadLog()
+
+    fun loadLog():String {
+        return StaticAppConfig.logFile.readText()
+    }
+
+    fun addEntryAndSaveLog(message:String, id:String) {
+        // create new log entry
+        var newlogEntry = "commit " + id + "\n"
+        newlogEntry += "Author: " + Config.username + "\n"
+        newlogEntry += message + "\n"
+        // append new log entry on top of the file and save to disk
+        log = newlogEntry + "\n" + log
+        StaticAppConfig.logFile.writeText(log)
+    }
+
+    fun showLog() {
+        if (log != "")
+            println(log)
+        else
+            println("No commits yet.")
+    }
+
+}
+
+class  Commit(_message:String ) {
+
+    val id = createHash(Log.log + LocalDateTime.now().toString())
+
+    init {
+        if(filesChangedSinceLastCommit()) {
+            Log.addEntryAndSaveLog(_message, id)
+            saveSnapshotToCommitDirectory()
+            println("Changes are committed.")
+        }
+        else
+            println("Nothing to commit.")
+    }
+
+    fun createHash(input: String):String {
+        // hash a combination logfile and timestamp (optionally plus message)
+        val bytes = input.toByteArray()
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return digest.fold("", { str, it -> str + "%02x".format(it) })
+        return ""
+    }
+
+    fun filesChangedSinceLastCommit(): Boolean {
+        // fetch last commit id, and return true if no one exists
+        var latestCommitID = "no commits so far"
+        if(Log.log != "")
+            latestCommitID = Log.log.lines()[0].split(" ")[1]
+        else
+            return true
+        // compare hashes of all tracked files with those saved along with last commit
+        for(fileName in Index.trackedFiles) {
+            val currentFile = File(StaticAppConfig.rootDirectory.absolutePath + "\\" +fileName)
+            val committedFile = File(StaticAppConfig.commitDirectory.absolutePath + "\\" + latestCommitID + "\\" +fileName)
+            if(createHash(currentFile.readText()) != createHash(committedFile.readText()))
+                return true
+        }
+        return false
+    }
+
+    fun saveSnapshotToCommitDirectory() {
+        // create new dir with id
+        val newCommitDir = File(StaticAppConfig.commitDirectory.absolutePath + "\\" + id)
+        newCommitDir.mkdir()
+        // copy all the tracked files
+        for(fileName in Index.trackedFiles) {
+            val sourceFile = File(StaticAppConfig.rootDirectory.absolutePath + "\\" +fileName)
+            val targetFile = File(StaticAppConfig.commitDirectory.absolutePath + "\\" + id + "\\" +fileName)
+            if(!targetFile.exists()) // should not exist
+                sourceFile.copyTo(targetFile)
+        }
+    }
+
 }
 
 object StaticAppConfig {
 
-    val vcsDirectory = File(System.getProperty("user.dir") + "\\vcs")
+    val rootDirectory = File(System.getProperty("user.dir"))
+    val vcsDirectory = File(rootDirectory.absolutePath + "\\vcs")
+    val commitDirectory = File(vcsDirectory.absolutePath + "\\commits")
     val configFile = File(vcsDirectory.absolutePath + "\\config.txt")
     var indexFile = File(vcsDirectory.absolutePath + "\\index.txt")
-    val indexItemSeparator = "\n"
+    var logFile = File(vcsDirectory.absolutePath + "\\log.txt")
 
     fun initFileSystem() {
 
-        // create directory
+        // create vcs directory
         if(!vcsDirectory.exists())
             vcsDirectory.mkdir()
+
+        // create commit directory
+        if(!commitDirectory.exists())
+            commitDirectory.mkdir()
 
         // create config file
         if(!configFile.exists())
@@ -185,5 +270,10 @@ object StaticAppConfig {
         // create index file
         if(!indexFile.exists())
             indexFile.createNewFile()
+
+        // create log file
+        if(!logFile.exists())
+            logFile.createNewFile()
+
     }
 }
