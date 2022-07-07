@@ -51,7 +51,7 @@ object Interpreter {
                 "add" -> add(args[1])
                 "log" -> log()
                 "commit" -> commit(args[1])
-                "checkout" -> checkout()
+                "checkout" -> checkout(args[1])
                 else -> println("'${args[1]}' is not a SVCS command.")
             }
     }
@@ -107,7 +107,8 @@ object Interpreter {
     }
 
     fun log() {
-        VCS.showLog()
+        if(!VCS.showLog())
+            println("No commits yet.")
     }
 
     fun commit() {
@@ -119,9 +120,15 @@ object Interpreter {
     }
 
     fun checkout() {
-        println("Restore a file.")
+        println("Commit id was not passed.")
     }
 
+    fun checkout(id:String) {
+        if(VCS.checkout(id))
+            println("Switched to commit $id.")
+        else
+            println("Commit does not exist.")
+    }
 }
 
 object VCS {
@@ -172,11 +179,23 @@ object VCS {
         Config.logFile.writeText(log)
     }
 
-    fun showLog() {
-        if (log != "")
+    fun showLog():Boolean {
+        if (log != "") {
             println(log)
+            return true
+        }
         else
-            println("No commits yet.")
+            return false
+    }
+
+    fun checkout(id:String):Boolean {
+        // restore the snapshot referring to commit id
+        if(VCS.log.contains(id)) {
+            Commit.checkout(id)
+            return true
+        }
+        else
+            return false
     }
 }
 
@@ -233,6 +252,16 @@ class  Commit(_message:String ) {
         }
     }
 
+    companion object {
+        fun checkout(id:String) {
+            // copy all the tracked files
+            for(fileName in VCS.index) {
+                val sourceFile = File(Config.commitDirectory.absolutePath + "\\" + id + "\\" +fileName)
+                val targetFile = File(Config.rootDirectory.absolutePath + "\\" +fileName)
+                sourceFile.copyTo(target = targetFile, overwrite = true)
+            }
+        }
+    }
 }
 
 object Config {

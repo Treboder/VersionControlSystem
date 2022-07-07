@@ -9,7 +9,7 @@ import java.io.IOException
 import kotlin.random.Random
 
 // version 1.2
-class TestStage3 : StageTest<String>() {
+class TestStage4 : StageTest<String>() {
 
     @DynamicTest(order = 1)
     fun checkVcsDirAndFileExistsAfterConfigCommand(): CheckResult {
@@ -98,7 +98,7 @@ class TestStage3 : StageTest<String>() {
     @DynamicTest(order = 5)
     fun addTest(): CheckResult {
         val fileName1 = "file${Random.nextInt(0, 1000)}.txt"
-        val fileName2 = "file${Random.nextInt(0, 1000)}.txt"
+        val fileName2= "file${Random.nextInt(0, 1000)}.txt"
 
         val file1 = File(fileName1)
         val file2 = File(fileName2)
@@ -157,7 +157,6 @@ class TestStage3 : StageTest<String>() {
             when{
                 commitsDir.exists().not() || commitsDir.isDirectory.not() ->
                     return CheckResult.wrong(commitsDirNotFoundMessage)
-
                 logFile.exists().not() -> return CheckResult.wrong(logNotFoundMessage)
             }
 
@@ -235,8 +234,10 @@ class TestStage3 : StageTest<String>() {
                 when{
                     commitDir.exists().not() || commitDir.isDirectory.not() ->
                         return CheckResult.wrong("Could not find folder $commitDirPath$feedbackMessage")
+
                     versionedFile1.exists().not() ->
                         return CheckResult.wrong("Could not find file ${versionedFile1.name} on $commitDirPath$feedbackMessage")
+
                     versionedFile2.exists().not() ->
                         return CheckResult.wrong("Could not find file ${versionedFile2.name} on $commitDirPath$feedbackMessage")
                 }
@@ -246,18 +247,75 @@ class TestStage3 : StageTest<String>() {
             deleteVcsDir()
             deleteFiles(file1, file2)
         }
+
         return CheckResult.correct()
     }
 
     @DynamicTest(order = 8)
     fun checkoutTest(): CheckResult {
+        val file1 = File("first_file.txt")
+        val file2 = File("second_file.txt")
+        val untrackedFile = File("untracked_file.txt")
+
+        file1.createNewFile()
+        file2.createNewFile()
+        untrackedFile.createNewFile()
+
         try {
-            checkOutputString(TestedProgram().start("checkout"), "Restore a file.")
+            val username = getRandomUserName()
+
+            TestedProgram().start("config", username)
+            TestedProgram().start("add", file1.name)
+            TestedProgram().start("add", file2.name)
+
+            val initialContentFile1 = "some text in the first file"
+            val initialContentFile2 = "some text in the second file"
+            val contentUntrackedFile = "some text for the untracked file"
+
+            file1.writeText(initialContentFile1)
+            file2.writeText(initialContentFile2)
+            untrackedFile.writeText(contentUntrackedFile)
+
+            TestedProgram().start("commit", "First commit")
+
+
+            val changedContentFile1 = "some changed text in the first file"
+            val changedContentFile2 = "some changed text in the second file"
+            file1.writeText(changedContentFile1)
+            file2.writeText(changedContentFile2)
+
+            TestedProgram().start("commit", "Second commit")
+
+            checkOutputString(TestedProgram().start("checkout"), "Commit id was not passed.")
+            checkOutputString(TestedProgram().start("checkout", "wrongId"), "Commit does not exist.")
+
+            val firstCommitHash = parseCommitHashes(TestedProgram().start("log")).last()
+
+            checkOutputString(
+                TestedProgram().start("checkout", firstCommitHash),
+                "Switched to commit $firstCommitHash."
+            )
+
+            if (file1.readText() != initialContentFile1 || file2.readText() != initialContentFile2) {
+                throw WrongAnswer(
+                    "Wrong content of the tracked files after checkout"
+                )
+            }
+
+            if (untrackedFile.readText() != contentUntrackedFile) {
+                throw WrongAnswer(
+                    "Your program changed untracked file"
+                )
+            }
+
         } finally {
             deleteVcsDir()
+            deleteFiles(file1, file2, untrackedFile)
         }
+
         return CheckResult.correct()
     }
+
 
     @DynamicTest(order = 9)
     fun wrongArgTest(): CheckResult {
@@ -297,6 +355,7 @@ class TestStage3 : StageTest<String>() {
         }
     }
 
+
     private fun checkLogOutput(got: String, want: String, regex: Regex) {
         if (got.isBlank()) {
             throw WrongAnswer(
@@ -310,7 +369,7 @@ class TestStage3 : StageTest<String>() {
         }
     }
 
-    private fun parseCommitHashes(logOutput: String) : List<String>{
+    private fun parseCommitHashes(logOutput: String): List<String> {
         val regex = Regex(
             "commit ([^\\s]+)", RegexOption.IGNORE_CASE
         )
@@ -323,7 +382,7 @@ class TestStage3 : StageTest<String>() {
 
         if (commitHashes.size != commitHashes.toSet().size) {
             throw WrongAnswer(
-                "Commit IDs are not unique"
+                "Commit ids are not unique"
             )
         }
     }

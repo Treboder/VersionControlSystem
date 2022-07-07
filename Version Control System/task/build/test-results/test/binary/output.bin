@@ -28,47 +28,63 @@
 [1;31m
 Start test 5[0m
 Add a file to the index.
-$The file 'file854.txt' is tracked.
+$The file 'file193.txt' is tracked.
 Tracked files:
-file854.txt
-$The file 'file976.txt' is tracked.
+file193.txt
+$The file 'file365.txt' is tracked.
 Tracked files:
-file854.txt
-file976.txt
-Can't find 'file288.txt'.
+file193.txt
+file365.txt
+Can't find 'file973.txt'.
 [1;31m
 Start test 6[0m
-The username is Sofie721.
+The username is Marie371.
 'The file 'first_file.txt' is tracked.
 (The file 'second_file.txt' is tracked.
 Changes are committed.
 [1;31m
 Start test 7[0m
-The username is Christine86.
+The username is Sofie373.
 'The file 'first_file.txt' is tracked.
 (The file 'second_file.txt' is tracked.
 No commits yet.
 Message was not passed.
 Changes are committed.
-Hcommit a39514540d2828346c20ad49adfedcad34d2bfd13b40a793fe658405123ad294
-Author: Christine86
+Hcommit a922805661c97b10842555d63055f46c14a0ae7436da6a31f301de9eb559666f
+Author: Sofie373
 Test message
 
 
 Nothing to commit.
 Changes are committed.
-Hcommit 9626cf7f455b868d2834f7d27b2b0c6f63626946de761bb177d862343fe22221
-Author: Christine86
+Hcommit 18b88c8ed684bbbe9936ebb6a71c59b16cfcce62fe2e1a445c5484f8aeadd1b0
+Author: Sofie373
 Test message3
 
-Hcommit a39514540d2828346c20ad49adfedcad34d2bfd13b40a793fe658405123ad294
-Author: Christine86
+Hcommit a922805661c97b10842555d63055f46c14a0ae7436da6a31f301de9eb559666f
+Author: Sofie373
 Test message
 
 
 [1;31m
 Start test 8[0m
-Restore a file.
+The username is Marie389.
+'The file 'first_file.txt' is tracked.
+(The file 'second_file.txt' is tracked.
+Changes are committed.
+Changes are committed.
+Commit id was not passed.
+Commit does not exist.
+Hcommit 89b0e92418ec1a0776cf3d1e06e6295cfb5025d3100c88dc0d74d5f3a16f10d6
+Author: Marie389
+Second commit
+
+Hcommit 0d260a849e989c13a100c73784f1270f1e09a9cada17ba1e084a4a66e2cc3164
+Author: Marie389
+First commit
+
+
+VSwitched to commit 0d260a849e989c13a100c73784f1270f1e09a9cada17ba1e084a4a66e2cc3164.
 [1;31m
 Start test 9[0m
-&'wrongArg231' is not a SVCS command.
+&'wrongArg419' is not a SVCS command.
