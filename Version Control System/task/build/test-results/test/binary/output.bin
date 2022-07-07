@@ -28,41 +28,41 @@
 [1;31m
 Start test 5[0m
 Add a file to the index.
-$The file 'file122.txt' is tracked.
+$The file 'file854.txt' is tracked.
 Tracked files:
-file122.txt
-#The file 'file60.txt' is tracked.
+file854.txt
+$The file 'file976.txt' is tracked.
 Tracked files:
-file122.txt
-file60.txt
-Can't find 'file832.txt'.
+file854.txt
+file976.txt
+Can't find 'file288.txt'.
 [1;31m
 Start test 6[0m
-The username is Christine997.
+The username is Sofie721.
 'The file 'first_file.txt' is tracked.
 (The file 'second_file.txt' is tracked.
 Changes are committed.
 [1;31m
 Start test 7[0m
-The username is Marie592.
+The username is Christine86.
 'The file 'first_file.txt' is tracked.
 (The file 'second_file.txt' is tracked.
 No commits yet.
 Message was not passed.
 Changes are committed.
-Hcommit 09fb6487b5173e9605793ec06af49651b99f2066a9408be3f304df282d17fba4
-Author: Marie592
+Hcommit a39514540d2828346c20ad49adfedcad34d2bfd13b40a793fe658405123ad294
+Author: Christine86
 Test message
 
 
 Nothing to commit.
 Changes are committed.
-Hcommit 15ff02575fe8e342636ab8decb01766a338477aa30214c81b379992c6be7e1a1
-Author: Marie592
+Hcommit 9626cf7f455b868d2834f7d27b2b0c6f63626946de761bb177d862343fe22221
+Author: Christine86
 Test message3
 
-Hcommit 09fb6487b5173e9605793ec06af49651b99f2066a9408be3f304df282d17fba4
-Author: Marie592
+Hcommit a39514540d2828346c20ad49adfedcad34d2bfd13b40a793fe658405123ad294
+Author: Christine86
 Test message
 
 
@@ -71,4 +71,4 @@
 Restore a file.
 [1;31m
 Start test 9[0m
-&'wrongArg753' is not a SVCS command.
+&'wrongArg231' is not a SVCS command.

@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 fun main(args: Array<String>) {
 
     // prepare directory/file structure
-    StaticAppConfig.initFileSystem()
+    Config.initFileSystem()
 
     // specify run mode, either in debugging mode or as desired with main args
     val debugging = false
@@ -68,26 +68,25 @@ object Interpreter {
     }
 
     fun config() {
-        Config.loadConfig()
-        if(Config.username == "")
+        VCS.readUserFile()
+        if(VCS.username == "")
             println("Please, tell me who you are.")
         else
-            println("The username is ${Config.username}.")
+            println("The username is ${VCS.username}.")
     }
 
     fun config(name: String) {
-        Config.username = name
-        Config.saveConfig()
-        println("The username is ${Config.username}.")
+        VCS.changeUserAndSaveConfig(name)
+        println("The username is ${VCS.username}.")
     }
 
     fun add() {
-        Index.loadIndex()
-        if(Index.trackedFiles.size == 0)
+        VCS.readIndexFile()
+        if(VCS.index.size == 0)
             println("Add a file to the index.")
         else {
             println("Tracked files:")
-            for (file in Index.trackedFiles)
+            for (file in VCS.index)
                 println(file)
             // alternatively without loop in one line
             // println(repository.trackedFiles.joinToString(separator = CommonDefinitions.separator) {it})
@@ -102,13 +101,13 @@ object Interpreter {
             println("Can't find '$newFile'.")
         }
         else {
-            Index.addFileToIndexAndSaveIndex(newFile)
+            VCS.addFileToIndexAndSaveIndex(newFile)
             println("The file '$newFile' is tracked.")
         }
     }
 
     fun log() {
-        Log.showLog()
+        VCS.showLog()
     }
 
     fun commit() {
@@ -125,59 +124,52 @@ object Interpreter {
 
 }
 
-object Config {
+object VCS {
 
-    var username = loadConfig()
-
-    fun loadConfig():String {
-        return StaticAppConfig.configFile.readText()
-    }
-
-    fun saveConfig() {
-        StaticAppConfig.configFile.writeText(username)
-    }
-}
-
-object Index {
-
-    var trackedFiles = mutableListOf<String>()
+    var username = readUserFile()
+    var log = readLogFile()
+    var index = mutableListOf<String>()
     val indexItemSeparator = "\n"
 
     init {
-        loadIndex()
+        readIndexFile()
     }
 
-    fun loadIndex() {
-        trackedFiles.clear()
-        for(fileName in StaticAppConfig.indexFile.readText().split(indexItemSeparator))
+    fun readUserFile():String {
+        return Config.configFile.readText()
+    }
+
+    fun readLogFile():String {
+        return Config.logFile.readText()
+    }
+
+    fun readIndexFile() {
+        index.clear()
+        for(fileName in Config.indexFile.readText().split(indexItemSeparator))
             if(fileName != "")
-                trackedFiles.add(fileName)
+                index.add(fileName)
+    }
+
+    fun changeUserAndSaveConfig(user:String) {
+        username = user
+        Config.configFile.writeText(username)
     }
 
     fun addFileToIndexAndSaveIndex(fileName:String) {
-        if(!trackedFiles.contains(fileName)) {
-            Index.trackedFiles.add(fileName)
-            StaticAppConfig.indexFile.writeText(trackedFiles.joinToString(separator = indexItemSeparator) { it })
+        if(!index.contains(fileName)) {
+            index.add(fileName)
+            Config.indexFile.writeText(index.joinToString(separator = indexItemSeparator) { it })
         }
-    }
-}
-
-object Log {
-
-    var log = loadLog()
-
-    fun loadLog():String {
-        return StaticAppConfig.logFile.readText()
     }
 
     fun addEntryAndSaveLog(message:String, id:String) {
         // create new log entry
         var newlogEntry = "commit " + id + "\n"
-        newlogEntry += "Author: " + Config.username + "\n"
+        newlogEntry += "Author: " + VCS.username + "\n"
         newlogEntry += message + "\n"
         // append new log entry on top of the file and save to disk
         log = newlogEntry + "\n" + log
-        StaticAppConfig.logFile.writeText(log)
+        Config.logFile.writeText(log)
     }
 
     fun showLog() {
@@ -186,16 +178,15 @@ object Log {
         else
             println("No commits yet.")
     }
-
 }
 
 class  Commit(_message:String ) {
 
-    val id = createHash(Log.log + LocalDateTime.now().toString())
+    val id = createHash(VCS.log + LocalDateTime.now().toString())
 
     init {
         if(filesChangedSinceLastCommit()) {
-            Log.addEntryAndSaveLog(_message, id)
+            VCS.addEntryAndSaveLog(_message, id)
             saveSnapshotToCommitDirectory()
             println("Changes are committed.")
         }
@@ -215,14 +206,14 @@ class  Commit(_message:String ) {
     fun filesChangedSinceLastCommit(): Boolean {
         // fetch last commit id, and return true if no one exists
         var latestCommitID = "no commits so far"
-        if(Log.log != "")
-            latestCommitID = Log.log.lines()[0].split(" ")[1]
+        if(VCS.log != "")
+            latestCommitID = VCS.log.lines()[0].split(" ")[1]
         else
             return true
         // compare hashes of all tracked files with those saved along with last commit
-        for(fileName in Index.trackedFiles) {
-            val currentFile = File(StaticAppConfig.rootDirectory.absolutePath + "\\" +fileName)
-            val committedFile = File(StaticAppConfig.commitDirectory.absolutePath + "\\" + latestCommitID + "\\" +fileName)
+        for(fileName in VCS.index) {
+            val currentFile = File(Config.rootDirectory.absolutePath + "\\" +fileName)
+            val committedFile = File(Config.commitDirectory.absolutePath + "\\" + latestCommitID + "\\" +fileName)
             if(createHash(currentFile.readText()) != createHash(committedFile.readText()))
                 return true
         }
@@ -231,12 +222,12 @@ class  Commit(_message:String ) {
 
     fun saveSnapshotToCommitDirectory() {
         // create new dir with id
-        val newCommitDir = File(StaticAppConfig.commitDirectory.absolutePath + "\\" + id)
+        val newCommitDir = File(Config.commitDirectory.absolutePath + "\\" + id)
         newCommitDir.mkdir()
         // copy all the tracked files
-        for(fileName in Index.trackedFiles) {
-            val sourceFile = File(StaticAppConfig.rootDirectory.absolutePath + "\\" +fileName)
-            val targetFile = File(StaticAppConfig.commitDirectory.absolutePath + "\\" + id + "\\" +fileName)
+        for(fileName in VCS.index) {
+            val sourceFile = File(Config.rootDirectory.absolutePath + "\\" +fileName)
+            val targetFile = File(Config.commitDirectory.absolutePath + "\\" + id + "\\" +fileName)
             if(!targetFile.exists()) // should not exist
                 sourceFile.copyTo(targetFile)
         }
@@ -244,7 +235,7 @@ class  Commit(_message:String ) {
 
 }
 
-object StaticAppConfig {
+object Config {
 
     val rootDirectory = File(System.getProperty("user.dir"))
     val vcsDirectory = File(rootDirectory.absolutePath + "\\vcs")
